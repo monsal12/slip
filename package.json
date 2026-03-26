@@ -1,0 +1,27 @@
+{
+  "name": "slip",
+  "version": "1.0.0",
+  "description": "Website slip gaji dengan pengiriman otomatis ke email karyawan",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "dayjs": "^1.11.20",
+    "dotenv": "^17.3.1",
+    "ejs": "^5.0.1",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "mongoose": "^9.3.2",
+    "multer": "^2.1.1",
+    "nodemailer": "^8.0.4",
+    "pdfkit": "^0.18.0",
+    "qrcode": "^1.5.4",
+    "xlsx": "^0.18.5"
+  }
+}

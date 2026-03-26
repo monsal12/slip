@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Slip Gaji</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/app.css" />
+</head>
+<body class="login-body">
+  <main class="login-wrap">
+    <section class="login-card">
+      <p class="kicker">Sistem Penggajian RS</p>
+      <h1>Login Dashboard</h1>
+      <p>Masuk untuk mengakses pembuatan dan pengiriman slip gaji.</p>
+
+      <% if (error) { %>
+        <p class="alert error"><%= error %></p>
+      <% } %>
+
+      <form method="POST" action="/login" class="login-form">
+        <label>Username
+          <input type="text" name="username" placeholder="Masukkan username" required />
+        </label>
+        <label>Password
+          <input type="password" name="password" placeholder="Masukkan password" required />
+        </label>
+        <button type="submit">Masuk</button>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

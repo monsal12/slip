@@ -1,0 +1,242 @@
+0 verbose cli C:\Program Files\nodejs\node.exe C:\ProgramData\npm\npm\node_modules\npm\bin\npm-cli.js
+1 info using npm@11.3.0
+2 info using node@v22.15.0
+3 silly config load:file:C:\ProgramData\npm\npm\node_modules\npm\npmrc
+4 silly config load:file:D:\SLIP\.npmrc
+5 silly config load:file:C:\Users\user\.npmrc
+6 silly config load:file:C:\Users\user\AppData\Roaming\npm\etc\npmrc
+7 verbose title npm install express-session
+8 verbose argv "install" "express-session"
+9 verbose logfile logs-max:10 dir:D:\SLIP\%USERPROFILE%\.npm-cache\_logs\2026-03-26T04_41_25_607Z-
+10 verbose logfile D:\SLIP\%USERPROFILE%\.npm-cache\_logs\2026-03-26T04_41_25_607Z-debug-0.log
+11 silly logfile start cleaning logs, removing 1 files
+12 silly packumentCache heap:4345298944 maxSize:1086324736 maxEntrySize:543162368
+13 silly logfile done cleaning log files
+14 silly idealTree buildDeps
+15 silly fetch manifest express-session@*
+16 silly packumentCache full:https://registry.npmjs.org/express-session cache-miss
+17 http fetch GET 200 https://registry.npmjs.org/express-session 351ms (cache miss)
+18 silly packumentCache full:https://registry.npmjs.org/express-session set size:undefined disposed:false
+19 silly placeDep ROOT express-session@1.19.0 OK for: slip@1.0.0 want: *
+20 silly fetch manifest cookie-signature@~1.0.7
+21 silly packumentCache full:https://registry.npmjs.org/cookie-signature cache-miss
+22 silly fetch manifest debug@~2.6.9
+23 silly packumentCache full:https://registry.npmjs.org/debug cache-miss
+24 silly fetch manifest on-headers@~1.1.0
+25 silly packumentCache full:https://registry.npmjs.org/on-headers cache-miss
+26 silly fetch manifest uid-safe@~2.1.5
+27 silly packumentCache full:https://registry.npmjs.org/uid-safe cache-miss
+28 http fetch GET 200 https://registry.npmjs.org/on-headers 74ms (cache miss)
+29 silly packumentCache full:https://registry.npmjs.org/on-headers set size:undefined disposed:false
+30 http fetch GET 200 https://registry.npmjs.org/uid-safe 151ms (cache miss)
+31 silly packumentCache full:https://registry.npmjs.org/uid-safe set size:undefined disposed:false
+32 http fetch GET 200 https://registry.npmjs.org/cookie-signature 154ms (cache revalidated)
+33 silly packumentCache full:https://registry.npmjs.org/cookie-signature set size:21777 disposed:false
+34 http fetch GET 200 https://registry.npmjs.org/debug 157ms (cache revalidated)
+35 silly packumentCache full:https://registry.npmjs.org/debug set size:195840 disposed:false
+36 silly placeDep node_modules/express-session cookie-signature@1.0.7 OK for: express-session@1.19.0 want: ~1.0.7
+37 silly placeDep node_modules/express-session debug@2.6.9 OK for: express-session@1.19.0 want: ~2.6.9
+38 silly placeDep ROOT on-headers@1.1.0 OK for: express-session@1.19.0 want: ~1.1.0
+39 silly placeDep ROOT uid-safe@2.1.5 OK for: express-session@1.19.0 want: ~2.1.5
+40 silly fetch manifest ms@2.0.0
+41 silly packumentCache full:https://registry.npmjs.org/ms cache-miss
+42 silly fetch manifest random-bytes@~1.0.0
+43 silly packumentCache full:https://registry.npmjs.org/random-bytes cache-miss
+44 http fetch GET 200 https://registry.npmjs.org/random-bytes 53ms (cache miss)
+45 silly packumentCache full:https://registry.npmjs.org/random-bytes set size:undefined disposed:false
+46 http fetch GET 200 https://registry.npmjs.org/ms 55ms (cache revalidated)
+47 silly packumentCache full:https://registry.npmjs.org/ms set size:92208 disposed:false
+48 silly placeDep ROOT random-bytes@1.0.0 OK for: uid-safe@2.1.5 want: ~1.0.0
+49 silly placeDep node_modules/express-session ms@2.0.0 OK for: debug@2.6.9 want: 2.0.0
+50 silly reify moves {}
+51 silly audit bulk request {
+51 silly audit   '@mongodb-js/saslprep': [ '1.4.6' ],
+51 silly audit   '@noble/ciphers': [ '1.3.0' ],
+51 silly audit   '@noble/hashes': [ '1.8.0' ],
+51 silly audit   '@swc/helpers': [ '0.5.19' ],
+51 silly audit   '@types/webidl-conversions': [ '7.0.3' ],
+51 silly audit   '@types/whatwg-url': [ '13.0.0' ],
+51 silly audit   accepts: [ '2.0.0' ],
+51 silly audit   'adler-32': [ '1.3.1' ],
+51 silly audit   'append-field': [ '1.0.0' ],
+51 silly audit   'base64-js': [ '1.5.1', '0.0.8' ],
+51 silly audit   'body-parser': [ '2.2.2' ],
+51 silly audit   brotli: [ '1.3.3' ],
+51 silly audit   bson: [ '7.2.0' ],
+51 silly audit   'buffer-from': [ '1.1.2' ],
+51 silly audit   busboy: [ '1.6.0' ],
+51 silly audit   bytes: [ '3.1.2' ],
+51 silly audit   'call-bind-apply-helpers': [ '1.0.2' ],
+51 silly audit   'call-bound': [ '1.0.4' ],
+51 silly audit   cfb: [ '1.2.2' ],
+51 silly audit   clone: [ '2.1.2' ],
+51 silly audit   codepage: [ '1.15.0' ],
+51 silly audit   'concat-stream': [ '2.0.0' ],
+51 silly audit   'content-disposition': [ '1.0.1' ],
+51 silly audit   'content-type': [ '1.0.5' ],
+51 silly audit   cookie: [ '0.7.2' ],
+51 silly audit   'cookie-signature': [ '1.2.2', '1.0.7' ],
+51 silly audit   'crc-32': [ '1.2.2' ],
+51 silly audit   dayjs: [ '1.11.20' ],
+51 silly audit   debug: [ '4.4.3', '2.6.9' ],
+51 silly audit   depd: [ '2.0.0' ],
+51 silly audit   dfa: [ '1.2.0' ],
+51 silly audit   dotenv: [ '17.3.1' ],
+51 silly audit   'dunder-proto': [ '1.0.1' ],
+51 silly audit   'ee-first': [ '1.1.1' ],
+51 silly audit   ejs: [ '5.0.1' ],
+51 silly audit   encodeurl: [ '2.0.0' ],
+51 silly audit   'es-define-property': [ '1.0.1' ],
+51 silly audit   'es-errors': [ '1.3.0' ],
+51 silly audit   'es-object-atoms': [ '1.1.1' ],
+51 silly audit   'escape-html': [ '1.0.3' ],
+51 silly audit   etag: [ '1.8.1' ],
+51 silly audit   express: [ '5.2.1' ],
+51 silly audit   'fast-deep-equal': [ '3.1.3' ],
+51 silly audit   finalhandler: [ '2.1.1' ],
+51 silly audit   fontkit: [ '2.0.4' ],
+51 silly audit   forwarded: [ '0.2.0' ],
+51 silly audit   frac: [ '1.1.2' ],
+51 silly audit   fresh: [ '2.0.0' ],
+51 silly audit   'function-bind': [ '1.1.2' ],
+51 silly audit   'get-intrinsic': [ '1.3.0' ],
+51 silly audit   'get-proto': [ '1.0.1' ],
+51 silly audit   gopd: [ '1.2.0' ],
+51 silly audit   'has-symbols': [ '1.1.0' ],
+51 silly audit   hasown: [ '2.0.2' ],
+51 silly audit   'http-errors': [ '2.0.1' ],
+51 silly audit   'iconv-lite': [ '0.7.2' ],
+51 silly audit   inherits: [ '2.0.4' ],
+51 silly audit   'ipaddr.js': [ '1.9.1' ],
+51 silly audit   'is-promise': [ '4.0.0' ],
+51 silly audit   'js-md5': [ '0.8.3' ],
+51 silly audit   kareem: [ '3.2.0' ],
+51 silly audit   linebreak: [ '1.1.0' ],
+51 silly audit   'math-intrinsics': [ '1.1.0' ],
+51 silly audit   'media-typer': [ '1.1.0', '0.3.0' ],
+51 silly audit   'memory-pager': [ '1.5.0' ],
+51 silly audit   'merge-descriptors': [ '2.0.0' ],
+51 silly audit   'mime-db': [ '1.54.0', '1.52.0' ],
+51 silly audit   'mime-types': [ '3.0.2', '2.1.35' ],
+51 silly audit   mongodb: [ '7.1.1' ],
+51 silly audit   'mongodb-connection-string-url': [ '7.0.1' ],
+51 silly audit   mongoose: [ '9.3.2' ],
+51 silly audit   mpath: [ '0.9.0' ],
+51 silly audit   mquery: [ '6.0.0' ],
+51 silly audit   ms: [ '2.1.3', '2.0.0' ],
+51 silly audit   multer: [ '2.1.1' ],
+51 silly audit   'type-is': [ '1.6.18', '2.0.1' ],
+51 silly audit   negotiator: [ '1.0.0' ],
+51 silly audit   nodemailer: [ '8.0.4' ],
+51 silly audit   'object-inspect': [ '1.13.4' ],
+51 silly audit   'on-finished': [ '2.4.1' ],
+51 silly audit   once: [ '1.4.0' ],
+51 silly audit   pako: [ '0.2.9' ],
+51 silly audit   parseurl: [ '1.3.3' ],
+51 silly audit   'path-to-regexp': [ '8.3.0' ],
+51 silly audit   pdfkit: [ '0.18.0' ],
+51 silly audit   'png-js': [ '1.0.0' ],
+51 silly audit   'proxy-addr': [ '2.0.7' ],
+51 silly audit   punycode: [ '2.3.1' ],
+51 silly audit   qs: [ '6.15.0' ],
+51 silly audit   'range-parser': [ '1.2.1' ],
+51 silly audit   'raw-body': [ '3.0.2' ],
+51 silly audit   'readable-stream': [ '3.6.2' ],
+51 silly audit   restructure: [ '3.0.2' ],
+51 silly audit   router: [ '2.2.0' ],
+51 silly audit   'safe-buffer': [ '5.2.1' ],
+51 silly audit   'safer-buffer': [ '2.1.2' ],
+51 silly audit   send: [ '1.2.1' ],
+51 silly audit   'serve-static': [ '2.2.1' ],
+51 silly audit   setprototypeof: [ '1.2.0' ],
+51 silly audit   'side-channel': [ '1.1.0' ],
+51 silly audit   'side-channel-list': [ '1.0.0' ],
+51 silly audit   'side-channel-map': [ '1.0.1' ],
+51 silly audit   'side-channel-weakmap': [ '1.0.2' ],
+51 silly audit   sift: [ '17.1.3' ],
+51 silly audit   'sparse-bitfield': [ '3.0.3' ],
+51 silly audit   ssf: [ '0.11.2' ],
+51 silly audit   statuses: [ '2.0.2' ],
+51 silly audit   streamsearch: [ '1.1.0' ],
+51 silly audit   string_decoder: [ '1.3.0' ],
+51 silly audit   'tiny-inflate': [ '1.0.3' ],
+51 silly audit   toidentifier: [ '1.0.1' ],
+51 silly audit   tr46: [ '5.1.1' ],
+51 silly audit   tslib: [ '2.8.1' ],
+51 silly audit   typedarray: [ '0.0.6' ],
+51 silly audit   'unicode-properties': [ '1.4.1' ],
+51 silly audit   'unicode-trie': [ '2.0.0' ],
+51 silly audit   unpipe: [ '1.0.0' ],
+51 silly audit   'util-deprecate': [ '1.0.2' ],
+51 silly audit   vary: [ '1.1.2' ],
+51 silly audit   'webidl-conversions': [ '7.0.0' ],
+51 silly audit   'whatwg-url': [ '14.2.0' ],
+51 silly audit   wmf: [ '1.0.2' ],
+51 silly audit   word: [ '0.3.0' ],
+51 silly audit   wrappy: [ '1.0.2' ],
+51 silly audit   xlsx: [ '0.18.5' ],
+51 silly audit   'express-session': [ '1.19.0' ],
+51 silly audit   'on-headers': [ '1.1.0' ],
+51 silly audit   'uid-safe': [ '2.1.5' ],
+51 silly audit   'random-bytes': [ '1.0.0' ]
+51 silly audit }
+52 http cache random-bytes@https://registry.npmjs.org/random-bytes/-/random-bytes-1.0.0.tgz 0ms (cache hit)
+53 http cache on-headers@https://registry.npmjs.org/on-headers/-/on-headers-1.1.0.tgz 0ms (cache hit)
+54 http cache uid-safe@https://registry.npmjs.org/uid-safe/-/uid-safe-2.1.5.tgz 0ms (cache hit)
+55 http cache express-session@https://registry.npmjs.org/express-session/-/express-session-1.19.0.tgz 0ms (cache hit)
+56 http cache ms@https://registry.npmjs.org/ms/-/ms-2.0.0.tgz 0ms (cache hit)
+57 http cache debug@https://registry.npmjs.org/debug/-/debug-2.6.9.tgz 0ms (cache hit)
+58 silly tarball no local data for random-bytes@https://registry.npmjs.org/random-bytes/-/random-bytes-1.0.0.tgz. Extracting by manifest.
+59 silly tarball no local data for on-headers@https://registry.npmjs.org/on-headers/-/on-headers-1.1.0.tgz. Extracting by manifest.
+60 http cache cookie-signature@https://registry.npmjs.org/cookie-signature/-/cookie-signature-1.0.7.tgz 0ms (cache hit)
+61 silly tarball no local data for uid-safe@https://registry.npmjs.org/uid-safe/-/uid-safe-2.1.5.tgz. Extracting by manifest.
+62 silly tarball no local data for express-session@https://registry.npmjs.org/express-session/-/express-session-1.19.0.tgz. Extracting by manifest.
+63 silly tarball no local data for ms@https://registry.npmjs.org/ms/-/ms-2.0.0.tgz. Extracting by manifest.
+64 silly tarball no local data for debug@https://registry.npmjs.org/debug/-/debug-2.6.9.tgz. Extracting by manifest.
+65 silly tarball no local data for cookie-signature@https://registry.npmjs.org/cookie-signature/-/cookie-signature-1.0.7.tgz. Extracting by manifest.
+66 http fetch GET 200 https://registry.npmjs.org/on-headers/-/on-headers-1.1.0.tgz 117ms (cache miss)
+67 http fetch GET 200 https://registry.npmjs.org/random-bytes/-/random-bytes-1.0.0.tgz 119ms (cache miss)
+68 http fetch GET 200 https://registry.npmjs.org/uid-safe/-/uid-safe-2.1.5.tgz 118ms (cache miss)
+69 http fetch GET 200 https://registry.npmjs.org/ms/-/ms-2.0.0.tgz 161ms (cache miss)
+70 http fetch GET 200 https://registry.npmjs.org/cookie-signature/-/cookie-signature-1.0.7.tgz 163ms (cache miss)
+71 http fetch GET 200 https://registry.npmjs.org/express-session/-/express-session-1.19.0.tgz 180ms (cache miss)
+72 http fetch GET 200 https://registry.npmjs.org/debug/-/debug-2.6.9.tgz 194ms (cache miss)
+73 http fetch POST 200 https://registry.npmjs.org/-/npm/v1/security/advisories/bulk 218ms
+74 silly audit report {
+74 silly audit report   xlsx: [
+74 silly audit report     {
+74 silly audit report       id: 1108110,
+74 silly audit report       url: 'https://github.com/advisories/GHSA-4r6h-8v6p-xvw6',
+74 silly audit report       title: 'Prototype Pollution in sheetJS',
+74 silly audit report       severity: 'high',
+74 silly audit report       vulnerable_versions: '<0.19.3',
+74 silly audit report       cwe: [Array],
+74 silly audit report       cvss: [Object]
+74 silly audit report     },
+74 silly audit report     {
+74 silly audit report       id: 1108111,
+74 silly audit report       url: 'https://github.com/advisories/GHSA-5pgg-2g8v-p4x9',
+74 silly audit report       title: 'SheetJS Regular Expression Denial of Service (ReDoS)',
+74 silly audit report       severity: 'high',
+74 silly audit report       vulnerable_versions: '<0.20.2',
+74 silly audit report       cwe: [Array],
+74 silly audit report       cvss: [Object]
+74 silly audit report     }
+74 silly audit report   ]
+74 silly audit report }
+75 silly packumentCache corgi:https://registry.npmjs.org/xlsx cache-miss
+76 http fetch GET 200 https://registry.npmjs.org/xlsx 136ms (cache revalidated)
+77 silly packumentCache corgi:https://registry.npmjs.org/xlsx set size:134408 disposed:false
+78 silly ADD node_modules/random-bytes
+79 silly ADD node_modules/uid-safe
+80 silly ADD node_modules/on-headers
+81 silly ADD node_modules/express-session
+82 silly ADD node_modules/express-session/node_modules/ms
+83 silly ADD node_modules/express-session/node_modules/debug
+84 silly ADD node_modules/express-session/node_modules/cookie-signature
+85 verbose cwd D:\SLIP
+86 verbose os Windows_NT 10.0.26100
+87 verbose node v22.15.0
+88 verbose npm  v11.3.0
+89 verbose exit 0
+90 info ok

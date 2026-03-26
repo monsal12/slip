@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Slip Gaji Otomatis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/app.css" />
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <p class="kicker">Sistem Penggajian RS</p>
+        <h1>Dashboard Slip Gaji</h1>
+        <p class="lead">Input data payroll, generate PDF slip, dan kirim otomatis ke email karyawan dalam satu alur.</p>
+
+        <div class="hero-actions">
+          <span class="user-chip">Login: <%= loggedInUser %></span>
+          <span class="badge <%= smtpReady ? 'ok' : 'warn' %>">
+            <%= smtpReady ? 'SMTP siap kirim email' : 'SMTP belum aktif, slip tetap tersimpan' %>
+          </span>
+          <form method="POST" action="/smtp/test" class="smtp-form">
+            <button type="submit" class="secondary">Tes SMTP</button>
+          </form>
+          <form method="POST" action="/logout" class="smtp-form">
+            <button type="submit" class="secondary">Logout</button>
+          </form>
+        </div>
+
+        <% if (smtpSuccess) { %>
+          <p class="alert success"><%= smtpSuccess %></p>
+        <% } %>
+        <% if (smtpError) { %>
+          <p class="alert error"><strong>SMTP gagal:</strong> <%= smtpError %></p>
+        <% } %>
+      </div>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="card form-card">
+      <div class="card-head">
+        <h2>Input Slip Gaji</h2>
+        <p>Isi data lengkap lalu sistem akan generate PDF dan kirim email otomatis sesuai pilihan.</p>
+      </div>
+
+      <section class="batch-box">
+        <div class="batch-head">
+          <h3>Upload Batch Excel</h3>
+          <a class="link-btn template-link" href="/slips/template.xlsx">Download Template Excel</a>
+        </div>
+        <p>Isi template, lalu upload untuk membuat slip massal. Bisa langsung kirim email ke semua karyawan.</p>
+
+        <form method="POST" action="/slips/batch-upload" enctype="multipart/form-data" class="batch-form">
+          <input type="file" name="batchFile" accept=".xlsx,.xls" required />
+          <label class="checkbox-row inline-check">
+            <input type="checkbox" name="sendAllEmail" checked />
+            Kirim email ke semua baris pada file
+          </label>
+          <button type="submit" class="batch-submit">Upload Batch dan Proses</button>
+        </form>
+      </section>
+
+      <% if (success) { %>
+        <p class="alert success"><%= success %></p>
+      <% } %>
+      <% if (error) { %>
+        <p class="alert error"><%= error %></p>
+      <% } %>
+
+      <form method="POST" action="/slips/create" class="payroll-form" id="slipForm">
+        <div class="form-layout">
+          <div class="form-grid">
+            <p class="group-title">Informasi Umum</p>
+
+            <label>Institusi
+              <input type="text" name="institution" value="Mulia Rakan Membangun" />
+            </label>
+            <label>Bulan
+              <input type="number" min="1" max="12" name="month" value="<%= defaultMonth %>" required />
+            </label>
+            <label>Tahun
+              <input type="number" min="2000" max="2100" name="year" value="<%= defaultYear %>" required />
+            </label>
+
+            <p class="group-title">Data Karyawan</p>
+
+            <label>Nama Karyawan
+              <input type="text" name="employeeName" required />
+            </label>
+            <label>Posisi
+              <select name="position" required>
+                <option value="">Pilih posisi</option>
+                <option value="Dokter Umum">Dokter Umum</option>
+                <option value="Dokter Spesialis">Dokter Spesialis</option>
+                <option value="Karyawan">Karyawan</option>
+              </select>
+            </label>
+            <label>No Rekening
+              <input type="text" name="accountNumber" />
+            </label>
+            <label>Email Karyawan
+              <input type="email" name="email" required />
+            </label>
+
+            <p class="group-title">Komponen Pendapatan</p>
+
+            <label>Gaji Pokok
+              <input type="number" name="gajiPokok" min="0" step="1" value="0" />
+            </label>
+            <label>Gaji Jasa
+              <input type="number" name="gajiJasa" min="0" step="1" value="0" />
+            </label>
+            <label>Gaji Jaga
+              <input type="number" name="gajiJaga" min="0" step="1" value="0" />
+            </label>
+            <label>BPJS Ketenagakerjaan (Pendapatan)
+              <input type="number" name="bpjsKetenagakerjaanPendapatan" min="0" step="1" value="0" />
+            </label>
+            <label>BPJS Kesehatan (Pendapatan)
+              <input type="number" name="bpjsKesehatanPendapatan" min="0" step="1" value="0" />
+            </label>
+            <label>Bonus
+              <input type="number" name="bonus" min="0" step="1" value="0" />
+            </label>
+
+            <p class="group-title">Komponen Pengurangan</p>
+
+            <label>BPJS Ketenagakerjaan (Potongan)
+              <input type="number" name="bpjsKetenagakerjaanPotongan" min="0" step="1" value="0" />
+            </label>
+            <label>BPJS Kesehatan (Potongan)
+              <input type="number" name="bpjsKesehatanPotongan" min="0" step="1" value="0" />
+            </label>
+            <label>Potongan Lain
+              <input type="number" name="potonganLain" min="0" step="1" value="0" />
+            </label>
+
+            <label class="checkbox-row">
+              <input type="checkbox" name="sendEmail" checked />
+              Kirim otomatis ke email terdaftar
+            </label>
+
+            <button type="submit">Buat Slip dan Proses Email</button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <section class="card history-card">
+      <div class="card-head">
+        <h2>Riwayat Slip Terakhir</h2>
+        <p>Daftar 20 slip terbaru beserta status pengiriman email dan detail error.</p>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Periode</th>
+              <th>Nama</th>
+              <th>Email</th>
+              <th>Total Diterima</th>
+              <th>Status</th>
+              <th>Detail</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (!slips.length) { %>
+              <tr>
+                <td colspan="7" class="empty">Belum ada slip.</td>
+              </tr>
+            <% } %>
+            <% slips.forEach((slip) => { %>
+              <tr>
+                <td><%= slip.periodLabel %></td>
+                <td><%= slip.employee ? slip.employee.name : '-' %></td>
+                <td><%= slip.recipientEmail %></td>
+                <td>Rp <%= formatRupiah(slip.totalDiterima) %></td>
+                <td><span class="status <%= slip.emailStatus %>"><%= slip.emailStatus %></span></td>
+                <td class="detail"><%= slip.emailError || '-' %></td>
+                <td><a class="link-btn" href="/slips/<%= slip._id %>/download">Download PDF</a></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+</body>
+</html>

@@ -1,0 +1,19 @@
+0 verbose cli C:\Program Files\nodejs\node.exe C:\ProgramData\npm\npm\node_modules\npm\bin\npm-cli.js
+1 info using npm@11.3.0
+2 info using node@v22.15.0
+3 silly config load:file:C:\ProgramData\npm\npm\node_modules\npm\npmrc
+4 silly config load:file:D:\SLIP\.npmrc
+5 silly config load:file:C:\Users\user\.npmrc
+6 silly config load:file:C:\Users\user\AppData\Roaming\npm\etc\npmrc
+7 verbose title npm start
+8 verbose argv "start"
+9 verbose logfile logs-max:10 dir:D:\SLIP\%USERPROFILE%\.npm-cache\_logs\2026-03-26T04_33_56_602Z-
+10 verbose logfile D:\SLIP\%USERPROFILE%\.npm-cache\_logs\2026-03-26T04_33_56_602Z-debug-0.log
+11 silly logfile start cleaning logs, removing 1 files
+12 silly logfile done cleaning log files
+13 verbose cwd D:\SLIP
+14 verbose os Windows_NT 10.0.26100
+15 verbose node v22.15.0
+16 verbose npm  v11.3.0
+17 verbose exit -1
+18 verbose code -1
