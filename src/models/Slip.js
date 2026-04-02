@@ -5,6 +5,7 @@ const salaryComponentSchema = new mongoose.Schema(
     gajiPokok: { type: Number, default: 0 },
     gajiJasa: { type: Number, default: 0 },
     gajiJaga: { type: Number, default: 0 },
+    tunjangan: { type: Number, default: 0 },
     bpjsKetenagakerjaanPendapatan: { type: Number, default: 0 },
     bpjsKesehatanPendapatan: { type: Number, default: 0 },
     bonus: { type: Number, default: 0 },
@@ -19,6 +20,8 @@ const displayOptionsSchema = new mongoose.Schema(
   {
     showGajiJasa: { type: Boolean, default: true },
     showGajiJaga: { type: Boolean, default: false },
+    showTunjangan: { type: Boolean, default: true },
+    showPengurangan: { type: Boolean, default: true },
     showBpjsPendapatan: { type: Boolean, default: true },
     showBonus: { type: Boolean, default: true },
     showPotonganLain: { type: Boolean, default: true }
@@ -35,8 +38,8 @@ const slipSchema = new mongoose.Schema(
     periodYear: { type: Number, required: true },
     slipVariant: {
       type: String,
-      enum: ["otomatis", "dokter_umum", "karyawan"],
-      default: "otomatis"
+      enum: ["dokter_umum", "dokter_spesialis", "karyawan", "otomatis"],
+      default: "dokter_spesialis"
     },
     displayOptions: { type: displayOptionsSchema, default: () => ({}) },
     employee: { type: mongoose.Schema.Types.ObjectId, ref: "Employee", required: true },

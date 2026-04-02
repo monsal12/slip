@@ -91,13 +91,15 @@
             <label>Nama Karyawan
               <input type="text" name="employeeName" required />
             </label>
-            <label>Posisi
-              <select name="position" required>
-                <option value="">Pilih posisi</option>
-                <option value="Dokter Umum">Dokter Umum</option>
-                <option value="Dokter Spesialis">Dokter Spesialis</option>
-                <option value="Karyawan">Karyawan</option>
+            <label>Tipe Slip
+              <select name="slipVariant" required>
+                <option value="dokter_umum">Dokter Umum</option>
+                <option value="dokter_spesialis" selected>Dokter Spesialis</option>
+                <option value="karyawan">Karyawan</option>
               </select>
+            </label>
+            <label>Posisi
+              <input type="text" name="position" placeholder="Bebas, misalnya: Dokter Estetika, Admin, Supervisor" required />
             </label>
             <label>No Rekening
               <input type="text" name="accountNumber" />
@@ -116,6 +118,9 @@
             </label>
             <label>Gaji Jaga
               <input type="number" name="gajiJaga" min="0" step="1" value="0" />
+            </label>
+            <label>Tunjangan
+              <input type="number" name="tunjangan" min="0" step="1" value="0" />
             </label>
             <label>BPJS Ketenagakerjaan (Pendapatan)
               <input type="number" name="bpjsKetenagakerjaanPendapatan" min="0" step="1" value="0" />
@@ -137,6 +142,19 @@
             </label>
             <label>Potongan Lain
               <input type="number" name="potonganLain" min="0" step="1" value="0" />
+            </label>
+
+            <label>Tampilkan Tunjangan di Slip
+              <select name="showTunjangan">
+                <option value="on" selected>On</option>
+                <option value="off">Off</option>
+              </select>
+            </label>
+            <label>Tampilkan Pemotongan di Slip
+              <select name="showPengurangan">
+                <option value="on" selected>On</option>
+                <option value="off">Off</option>
+              </select>
             </label>
 
             <label class="checkbox-row">

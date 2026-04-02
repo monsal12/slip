@@ -26,12 +26,12 @@ async function generateSlipPdf(payload) {
 
   const fileName = `${payload.slipNumber}.pdf`;
   const filePath = path.join(outputDir, fileName);
-  const isDokterUmum =
-    payload.slipVariant === "dokter_umum" ||
-    (payload.slipVariant !== "karyawan" && payload.employee.position === "Dokter Umum");
+  const isDokterUmum = payload.slipVariant === "dokter_umum";
   const displayOptions = {
     showGajiJasa: payload.displayOptions?.showGajiJasa !== false,
     showGajiJaga: payload.displayOptions?.showGajiJaga === true,
+    showTunjangan: payload.displayOptions?.showTunjangan !== false,
+    showPengurangan: payload.displayOptions?.showPengurangan !== false,
     showBpjsPendapatan: payload.displayOptions?.showBpjsPendapatan !== false,
     showBonus: payload.displayOptions?.showBonus !== false,
     showPotonganLain: payload.displayOptions?.showPotonganLain !== false
@@ -143,6 +143,12 @@ async function generateSlipPdf(payload) {
           showDashForZero: isDokterUmum
         });
       }
+      if (displayOptions.showTunjangan || payload.salary.tunjangan > 0) {
+        y += 24;
+        drawRow(doc, "Tunjangan", payload.salary.tunjangan || 0, y, {
+          showDashForZero: isDokterUmum
+        });
+      }
       if (displayOptions.showBpjsPendapatan) {
         y += 24;
         drawRow(doc, "BPJS Ketenagakerjaan", payload.salary.bpjsKetenagakerjaanPendapatan, y, {
@@ -160,22 +166,25 @@ async function generateSlipPdf(payload) {
       y += 28;
       drawRow(doc, "Total Pendapatan", payload.totalPendapatan, y, { xLabel: 40, xValue: 340 });
 
-      y += 38;
-      doc.rect(30, y, 535, 24).fillAndStroke("#d9d9d9", "#d9d9d9");
-      doc.fillColor("black").font("Helvetica-Bold").fontSize(12).text("Pengurangan", 40, y + 6);
+      if (displayOptions.showPengurangan || payload.totalPengurangan > 0) {
+        y += 38;
+        doc.rect(30, y, 535, 24).fillAndStroke("#d9d9d9", "#d9d9d9");
+        doc.fillColor("black").font("Helvetica-Bold").fontSize(12).text("Pengurangan", 40, y + 6);
 
-      y += 32;
-      drawRow(doc, "BPJS Ketenagakerjaan", payload.salary.bpjsKetenagakerjaanPotongan, y);
-      y += 24;
-      drawRow(doc, "BPJS Kesehatan", payload.salary.bpjsKesehatanPotongan, y, { showDashForZero: isDokterUmum });
-      if (displayOptions.showPotonganLain || payload.salary.potonganLain > 0) {
+        y += 32;
+        drawRow(doc, "BPJS Ketenagakerjaan", payload.salary.bpjsKetenagakerjaanPotongan, y);
         y += 24;
-        drawRow(doc, "Potongan Lain", payload.salary.potonganLain, y, { showDashForZero: isDokterUmum });
+        drawRow(doc, "BPJS Kesehatan", payload.salary.bpjsKesehatanPotongan, y, { showDashForZero: isDokterUmum });
+        if (displayOptions.showPotonganLain || payload.salary.potonganLain > 0) {
+          y += 24;
+          drawRow(doc, "Potongan Lain", payload.salary.potonganLain, y, { showDashForZero: isDokterUmum });
+        }
+        y += 28;
+        drawRow(doc, "Total Pengurangan", payload.totalPengurangan, y);
+        y += 40;
+      } else {
+        y += 34;
       }
-      y += 28;
-      drawRow(doc, "Total Pengurangan", payload.totalPengurangan, y);
-
-      y += 40;
       doc.rect(30, y, 535, 30).fillAndStroke("#cfcfcf", "#cfcfcf");
       doc
         .fillColor("black")

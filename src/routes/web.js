@@ -30,8 +30,7 @@ const BULAN_ID = [
   "November",
   "Desember"
 ];
-const ALLOWED_POSITIONS = ["Dokter Umum", "Dokter Spesialis", "Karyawan"];
-const ALLOWED_SLIP_VARIANTS = ["otomatis", "dokter_umum", "karyawan"];
+const ALLOWED_SLIP_VARIANTS = ["dokter_umum", "dokter_spesialis", "karyawan"];
 
 const TEMPLATE_SHEETS = {
   KARYAWAN: "template_karyawan",
@@ -81,37 +80,28 @@ function parseOptionalBoolean(value) {
 function normalizeSlipVariant(value) {
   const raw = String(value || "").trim().toLowerCase();
   if (!raw) {
-    return "otomatis";
+    return "dokter_spesialis";
   }
 
   const map = {
-    otomatis: "otomatis",
-    auto: "otomatis",
+    otomatis: "dokter_spesialis",
+    auto: "dokter_spesialis",
     "dokter umum": "dokter_umum",
     dokter_umum: "dokter_umum",
+    dokum: "dokter_umum",
     "karyawan": "karyawan",
-    "dokter spesialis": "otomatis",
-    radiologi: "otomatis",
-    "dokter spesialis radiologi": "otomatis"
+    "dokter spesialis": "dokter_spesialis",
+    dokter_spesialis: "dokter_spesialis",
+    "dokter umu": "dokter_umum",
+    radiologi: "dokter_spesialis",
+    "dokter spesialis radiologi": "dokter_spesialis"
   };
 
-  return map[raw] || "otomatis";
+  return map[raw] || "dokter_spesialis";
 }
 
 function normalizePosition(value) {
-  const raw = String(value || "").trim().toLowerCase();
-
-  if (!raw) {
-    return "";
-  }
-
-  const map = {
-    "dokter umum": "Dokter Umum",
-    "dokter spesialis": "Dokter Spesialis",
-    karyawan: "Karyawan"
-  };
-
-  return map[raw] || "";
+  return String(value || "").trim();
 }
 
 function pickValue(source, keys, fallback = "") {
@@ -125,10 +115,12 @@ function pickValue(source, keys, fallback = "") {
 }
 
 function resolveDisplayOptions(input, position, slipVariant) {
-  const isDokterUmumProfile = slipVariant === "dokter_umum" || (slipVariant === "otomatis" && position === "Dokter Umum");
+  const isDokterUmumProfile = slipVariant === "dokter_umum";
   const defaults = {
     showGajiJasa: isDokterUmumProfile,
     showGajiJaga: isDokterUmumProfile,
+    showTunjangan: true,
+    showPengurangan: true,
     showBpjsPendapatan: true,
     showBonus: true,
     showPotonganLain: true
@@ -137,6 +129,8 @@ function resolveDisplayOptions(input, position, slipVariant) {
   const overrides = {
     showGajiJasa: parseOptionalBoolean(pickValue(input, ["Tampilkan Gaji Jasa", "showGajiJasa"], "")),
     showGajiJaga: parseOptionalBoolean(pickValue(input, ["Tampilkan Gaji Jaga", "showGajiJaga"], "")),
+    showTunjangan: parseOptionalBoolean(pickValue(input, ["Tampilkan Tunjangan", "showTunjangan"], "")),
+    showPengurangan: parseOptionalBoolean(pickValue(input, ["Tampilkan Pemotongan", "showPengurangan"], "")),
     showBpjsPendapatan: parseOptionalBoolean(
       pickValue(input, ["Tampilkan BPJS Pendapatan", "showBpjsPendapatan"], "")
     ),
@@ -147,6 +141,8 @@ function resolveDisplayOptions(input, position, slipVariant) {
   return {
     showGajiJasa: overrides.showGajiJasa === null ? defaults.showGajiJasa : overrides.showGajiJasa,
     showGajiJaga: overrides.showGajiJaga === null ? defaults.showGajiJaga : overrides.showGajiJaga,
+    showTunjangan: overrides.showTunjangan === null ? defaults.showTunjangan : overrides.showTunjangan,
+    showPengurangan: overrides.showPengurangan === null ? defaults.showPengurangan : overrides.showPengurangan,
     showBpjsPendapatan:
       overrides.showBpjsPendapatan === null ? defaults.showBpjsPendapatan : overrides.showBpjsPendapatan,
     showBonus: overrides.showBonus === null ? defaults.showBonus : overrides.showBonus,
@@ -163,12 +159,12 @@ function inferTemplateMetaFromSheet(sheetName) {
     return { defaultPosition: "Dokter Umum", defaultVariant: "dokter_umum" };
   }
   if (normalized.includes("radiologi")) {
-    return { defaultPosition: "Dokter Spesialis", defaultVariant: "otomatis" };
+    return { defaultPosition: "Dokter Spesialis", defaultVariant: "dokter_spesialis" };
   }
   if (normalized.includes("dokter_spesialis") || normalized.includes("dokter spesialis")) {
-    return { defaultPosition: "Dokter Spesialis", defaultVariant: "otomatis" };
+    return { defaultPosition: "Dokter Spesialis", defaultVariant: "dokter_spesialis" };
   }
-  return { defaultPosition: "", defaultVariant: "otomatis" };
+  return { defaultPosition: "", defaultVariant: "dokter_spesialis" };
 }
 
 function normalizePayload(input) {
@@ -202,6 +198,7 @@ function normalizePayload(input) {
     gajiPokok: toNumber(pickValue(input, ["gajiPokok", "Gaji Pokok"], 0)),
     gajiJasa: gajiJasaComputed,
     gajiJaga: toNumber(pickValue(input, ["gajiJaga", "Gaji Jaga"], 0)),
+    tunjangan: toNumber(pickValue(input, ["tunjangan", "Tunjangan"], 0)),
     bpjsKetenagakerjaanPendapatan: toNumber(
       pickValue(
         input,
@@ -244,12 +241,8 @@ async function createSlipRecord(payload, shouldSendEmail, indexHint = 0) {
     throw new Error("Bulan/tahun tidak valid");
   }
 
-  if (!ALLOWED_POSITIONS.includes(normalized.position)) {
-    throw new Error("Posisi wajib: Dokter Umum, Dokter Spesialis, atau Karyawan");
-  }
-
   if (!ALLOWED_SLIP_VARIANTS.includes(normalized.slipVariant)) {
-    throw new Error("Tipe slip tidak valid");
+    throw new Error("Tipe slip wajib: Dokter Umum, Dokter Spesialis, atau Karyawan");
   }
 
   const displayOptions = resolveDisplayOptions(payload, normalized.position, normalized.slipVariant);
@@ -258,20 +251,22 @@ async function createSlipRecord(payload, shouldSendEmail, indexHint = 0) {
     gajiPokok: normalized.gajiPokok,
     gajiJasa: displayOptions.showGajiJasa ? normalized.gajiJasa : 0,
     gajiJaga: displayOptions.showGajiJaga ? normalized.gajiJaga : 0,
+    tunjangan: displayOptions.showTunjangan ? normalized.tunjangan : 0,
     bpjsKetenagakerjaanPendapatan: displayOptions.showBpjsPendapatan
       ? normalized.bpjsKetenagakerjaanPendapatan
       : 0,
     bpjsKesehatanPendapatan: displayOptions.showBpjsPendapatan ? normalized.bpjsKesehatanPendapatan : 0,
     bonus: displayOptions.showBonus ? normalized.bonus : 0,
-    bpjsKetenagakerjaanPotongan: normalized.bpjsKetenagakerjaanPotongan,
-    bpjsKesehatanPotongan: normalized.bpjsKesehatanPotongan,
-    potonganLain: displayOptions.showPotonganLain ? normalized.potonganLain : 0
+    bpjsKetenagakerjaanPotongan: displayOptions.showPengurangan ? normalized.bpjsKetenagakerjaanPotongan : 0,
+    bpjsKesehatanPotongan: displayOptions.showPengurangan ? normalized.bpjsKesehatanPotongan : 0,
+    potonganLain: displayOptions.showPengurangan && displayOptions.showPotonganLain ? normalized.potonganLain : 0
   };
 
   const totalPendapatan =
     salary.gajiPokok +
     salary.gajiJasa +
     salary.gajiJaga +
+    salary.tunjangan +
     salary.bpjsKetenagakerjaanPendapatan +
     salary.bpjsKesehatanPendapatan +
     salary.bonus;
@@ -424,6 +419,7 @@ router.get("/slips/template.xlsx", (req, res) => {
     "Gaji Pokok",
     "Gaji Jasa",
     "Gaji Jaga",
+    "Tunjangan",
     "BPJS Ketenagakerjaan (Pendapatan)",
     "BPJS Kesehatan (Pendapatan)",
     "Bonus",
@@ -432,6 +428,8 @@ router.get("/slips/template.xlsx", (req, res) => {
     "Potongan Lain",
     "Tampilkan Gaji Jasa",
     "Tampilkan Gaji Jaga",
+    "Tampilkan Tunjangan",
+    "Tampilkan Pemotongan",
     "Tampilkan BPJS Pendapatan",
     "Tampilkan Bonus",
     "Tampilkan Potongan Lain",
@@ -451,10 +449,13 @@ router.get("/slips/template.xlsx", (req, res) => {
     "Jasa Medis Pasien Madco",
     "Jasa Medis Rawat Inap",
     "Jasa Medis Tindakan Operasi",
+    "Tunjangan",
     "Bonus",
     "BPJS Ketenagakerjaan (Pendapatan)",
     "PPH Pasal 21",
     "BPJS Ketenagakerjaan (Potongan)",
+    "Tampilkan Tunjangan",
+    "Tampilkan Pemotongan",
     "Kirim Email"
   ];
 
@@ -472,10 +473,13 @@ router.get("/slips/template.xlsx", (req, res) => {
     "Jasa Medis Pasien Madco",
     "Jasa Medis Rawat Inap",
     "Jasa Medis Tindakan Operasi",
+    "Tunjangan",
     "Bonus",
     "BPJS Ketenagakerjaan (Pendapatan)",
     "PPH Pasal 21",
     "BPJS Ketenagakerjaan (Potongan)",
+    "Tampilkan Tunjangan",
+    "Tampilkan Pemotongan",
     "Kirim Email"
   ];
 
@@ -492,6 +496,7 @@ router.get("/slips/template.xlsx", (req, res) => {
       "Gaji Pokok": 3500000,
       "Gaji Jasa": 1200000,
       "Gaji Jaga": 450000,
+      Tunjangan: 350000,
       "BPJS Ketenagakerjaan (Pendapatan)": 0,
       "BPJS Kesehatan (Pendapatan)": 0,
       Bonus: 0,
@@ -500,6 +505,8 @@ router.get("/slips/template.xlsx", (req, res) => {
       "Potongan Lain": 0,
       "Tampilkan Gaji Jasa": "yes",
       "Tampilkan Gaji Jaga": "yes",
+      "Tampilkan Tunjangan": "yes",
+      "Tampilkan Pemotongan": "yes",
       "Tampilkan BPJS Pendapatan": "yes",
       "Tampilkan Bonus": "yes",
       "Tampilkan Potongan Lain": "no",
@@ -511,12 +518,13 @@ router.get("/slips/template.xlsx", (req, res) => {
       Tahun: dayjs().year(),
       "Nama Karyawan": "Contoh Dokter Spesialis",
       Posisi: "Dokter Spesialis",
-      "Tipe Slip": "otomatis",
+      "Tipe Slip": "Dokter Spesialis",
       "No Rekening": "1234567891",
       "Email Karyawan": "dokterspesialis@email.com",
       "Gaji Pokok": 5500000,
       "Gaji Jasa": 2200000,
       "Gaji Jaga": 0,
+      Tunjangan: 500000,
       "BPJS Ketenagakerjaan (Pendapatan)": 0,
       "BPJS Kesehatan (Pendapatan)": 0,
       Bonus: 0,
@@ -525,6 +533,8 @@ router.get("/slips/template.xlsx", (req, res) => {
       "Potongan Lain": 0,
       "Tampilkan Gaji Jasa": "yes",
       "Tampilkan Gaji Jaga": "no",
+      "Tampilkan Tunjangan": "yes",
+      "Tampilkan Pemotongan": "yes",
       "Tampilkan BPJS Pendapatan": "yes",
       "Tampilkan Bonus": "yes",
       "Tampilkan Potongan Lain": "yes",
@@ -542,6 +552,7 @@ router.get("/slips/template.xlsx", (req, res) => {
       "Gaji Pokok": 2800000,
       "Gaji Jasa": 0,
       "Gaji Jaga": 0,
+      Tunjangan: 250000,
       "BPJS Ketenagakerjaan (Pendapatan)": 0,
       "BPJS Kesehatan (Pendapatan)": 0,
       Bonus: 0,
@@ -550,6 +561,8 @@ router.get("/slips/template.xlsx", (req, res) => {
       "Potongan Lain": 0,
       "Tampilkan Gaji Jasa": "no",
       "Tampilkan Gaji Jaga": "no",
+      "Tampilkan Tunjangan": "yes",
+      "Tampilkan Pemotongan": "yes",
       "Tampilkan BPJS Pendapatan": "yes",
       "Tampilkan Bonus": "yes",
       "Tampilkan Potongan Lain": "no",
@@ -574,10 +587,13 @@ router.get("/slips/template.xlsx", (req, res) => {
       "Jasa Medis Pasien Madco": 288000,
       "Jasa Medis Rawat Inap": 0,
       "Jasa Medis Tindakan Operasi": 0,
+      Tunjangan: 500000,
       Bonus: 0,
       "BPJS Ketenagakerjaan (Pendapatan)": 0,
       "PPH Pasal 21": 0,
       "BPJS Ketenagakerjaan (Potongan)": 0,
+      "Tampilkan Tunjangan": "yes",
+      "Tampilkan Pemotongan": "yes",
       "Kirim Email": "yes"
     }
   ];
@@ -597,10 +613,13 @@ router.get("/slips/template.xlsx", (req, res) => {
       "Jasa Medis Pasien Madco": 220000,
       "Jasa Medis Rawat Inap": 0,
       "Jasa Medis Tindakan Operasi": 0,
+      Tunjangan: 300000,
       Bonus: 0,
       "BPJS Ketenagakerjaan (Pendapatan)": 0,
       "PPH Pasal 21": 0,
       "BPJS Ketenagakerjaan (Potongan)": 0,
+      "Tampilkan Tunjangan": "yes",
+      "Tampilkan Pemotongan": "yes",
       "Kirim Email": "yes"
     }
   ];
@@ -612,12 +631,14 @@ router.get("/slips/template.xlsx", (req, res) => {
     { wch: 8 },
     { wch: 8 },
     { wch: 26 },
+    { wch: 12 },
     { wch: 20 },
     { wch: 14 },
     { wch: 16 },
     { wch: 28 },
     { wch: 14 },
     { wch: 12 },
+    { wch: 20 },
     { wch: 12 },
     { wch: 34 },
     { wch: 28 },
@@ -625,6 +646,7 @@ router.get("/slips/template.xlsx", (req, res) => {
     { wch: 32 },
     { wch: 27 },
     { wch: 14 },
+    { wch: 20 },
     { wch: 20 },
     { wch: 20 },
     { wch: 26 },
@@ -646,16 +668,21 @@ router.get("/slips/template.xlsx", (req, res) => {
   const radioSheet = XLSX.utils.json_to_sheet(sampleRadiologi, { header: radiologiHeaders });
   XLSX.utils.book_append_sheet(workbook, radioSheet, TEMPLATE_SHEETS.RADIOLOGI);
 
-  const referensiRows = ALLOWED_POSITIONS.map((position) => ({ posisiValid: position }));
+  const referensiRows = [
+    { tipeSlipValid: "Dokter Umum" },
+    { tipeSlipValid: "Dokter Spesialis" },
+    { tipeSlipValid: "Karyawan" }
+  ];
   const referensiSheet = XLSX.utils.json_to_sheet(referensiRows);
-  XLSX.utils.book_append_sheet(workbook, referensiSheet, "referensi_posisi");
+  XLSX.utils.book_append_sheet(workbook, referensiSheet, "referensi_tipe_slip");
 
   const panduanSheet = XLSX.utils.json_to_sheet([
     {
       catatan:
-        "Isi salah satu sheet template sesuai kebutuhan. Sistem akan membaca semua sheet template sekaligus saat upload.",
+        "Isi salah satu sheet template sesuai kebutuhan. Posisi bebas diisi apa saja, sistem akan menampilkan sesuai input.",
       nilai_boolean: "Gunakan yes/no untuk kolom Kirim Email atau Tampilkan ...",
-      tipe_slip: "Dokter Umum, Karyawan, atau otomatis"
+      tipe_slip: "Tipe Slip wajib salah satu: Dokter Umum, Dokter Spesialis, atau Karyawan",
+      kolom_baru: "Gunakan kolom Tunjangan dan Tampilkan Pemotongan untuk komponen/toggle tambahan"
     }
   ]);
   XLSX.utils.book_append_sheet(workbook, panduanSheet, "panduan");
@@ -678,7 +705,7 @@ router.post("/slips/batch-upload", upload.single("batchFile"), async (req, res) 
 
     const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
     const dataSheets = workbook.SheetNames.filter(
-      (name) => !["referensi_posisi", "panduan"].includes(String(name).toLowerCase())
+      (name) => !["referensi_posisi", "referensi_tipe_slip", "panduan"].includes(String(name).toLowerCase())
     );
 
     if (!dataSheets.length) {
