@@ -104,7 +104,10 @@ Kolom template:
 - `Email Karyawan`
 - `Gaji Pokok`
 - `Gaji Jasa`
+- `Jasa KJS`
 - `Gaji Jaga`
+- `Tunjangan Jabaran`
+- `Tunjangan Hari Raya`
 - `BPJS Ketenagakerjaan (Pendapatan)`
 - `BPJS Kesehatan (Pendapatan)`
 - `Bonus`
@@ -112,9 +115,12 @@ Kolom template:
 - `BPJS Kesehatan (Potongan)`
 - `Potongan Lain`
 - `Tampilkan Gaji Jasa` (`yes/no`)
+- `Tampilkan Jasa KJS` (`yes/no`)
 - `Tampilkan Gaji Jaga` (`yes/no`)
 - `Tampilkan BPJS Pendapatan` (`yes/no`)
 - `Tampilkan Bonus` (`yes/no`)
+- `Tampilkan Tunjangan Jabaran` (`yes/no`)
+- `Tampilkan Tunjangan Hari Raya` (`yes/no`)
 - `Tampilkan Potongan Lain` (`yes/no`)
 - `Kirim Email` (`yes`/`true`/`1` untuk kirim email per baris)
 

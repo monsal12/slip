@@ -4,8 +4,11 @@ const salaryComponentSchema = new mongoose.Schema(
   {
     gajiPokok: { type: Number, default: 0 },
     gajiJasa: { type: Number, default: 0 },
+    jasaKjs: { type: Number, default: 0 },
     gajiJaga: { type: Number, default: 0 },
     tunjangan: { type: Number, default: 0 },
+    tunjanganJabaran: { type: Number, default: 0 },
+    tunjanganHariRaya: { type: Number, default: 0 },
     bpjsKetenagakerjaanPendapatan: { type: Number, default: 0 },
     bpjsKesehatanPendapatan: { type: Number, default: 0 },
     bonus: { type: Number, default: 0 },
@@ -19,8 +22,11 @@ const salaryComponentSchema = new mongoose.Schema(
 const displayOptionsSchema = new mongoose.Schema(
   {
     showGajiJasa: { type: Boolean, default: true },
+    showJasaKjs: { type: Boolean, default: true },
     showGajiJaga: { type: Boolean, default: false },
     showTunjangan: { type: Boolean, default: true },
+    showTunjanganJabaran: { type: Boolean, default: true },
+    showTunjanganHariRaya: { type: Boolean, default: true },
     showPengurangan: { type: Boolean, default: true },
     showBpjsPendapatan: { type: Boolean, default: true },
     showBonus: { type: Boolean, default: true },

@@ -29,8 +29,11 @@ async function generateSlipPdf(payload) {
   const isDokterUmum = payload.slipVariant === "dokter_umum";
   const displayOptions = {
     showGajiJasa: payload.displayOptions?.showGajiJasa !== false,
+    showJasaKjs: payload.displayOptions?.showJasaKjs !== false,
     showGajiJaga: payload.displayOptions?.showGajiJaga === true,
     showTunjangan: payload.displayOptions?.showTunjangan !== false,
+    showTunjanganJabaran: payload.displayOptions?.showTunjanganJabaran !== false,
+    showTunjanganHariRaya: payload.displayOptions?.showTunjanganHariRaya !== false,
     showPengurangan: payload.displayOptions?.showPengurangan !== false,
     showBpjsPendapatan: payload.displayOptions?.showBpjsPendapatan !== false,
     showBonus: payload.displayOptions?.showBonus !== false,
@@ -137,6 +140,10 @@ async function generateSlipPdf(payload) {
         y += 24;
         drawRow(doc, "Gaji Jasa", payload.salary.gajiJasa, y, { showDashForZero: isDokterUmum });
       }
+      if (displayOptions.showJasaKjs || payload.salary.jasaKjs > 0) {
+        y += 24;
+        drawRow(doc, "Jasa KJS", payload.salary.jasaKjs, y, { showDashForZero: isDokterUmum });
+      }
       if (displayOptions.showGajiJaga || payload.salary.gajiJaga > 0) {
         y += 24;
         drawRow(doc, "Gaji Jaga", payload.salary.gajiJaga || 0, y, {
@@ -146,6 +153,18 @@ async function generateSlipPdf(payload) {
       if (displayOptions.showTunjangan || payload.salary.tunjangan > 0) {
         y += 24;
         drawRow(doc, "Tunjangan", payload.salary.tunjangan || 0, y, {
+          showDashForZero: isDokterUmum
+        });
+      }
+      if (displayOptions.showTunjanganJabaran || payload.salary.tunjanganJabaran > 0) {
+        y += 24;
+        drawRow(doc, "Tunjangan Jabaran", payload.salary.tunjanganJabaran || 0, y, {
+          showDashForZero: isDokterUmum
+        });
+      }
+      if (displayOptions.showTunjanganHariRaya || payload.salary.tunjanganHariRaya > 0) {
+        y += 24;
+        drawRow(doc, "Tunjangan Hari Raya", payload.salary.tunjanganHariRaya || 0, y, {
           showDashForZero: isDokterUmum
         });
       }

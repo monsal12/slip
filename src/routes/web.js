@@ -118,8 +118,11 @@ function resolveDisplayOptions(input, position, slipVariant) {
   const isDokterUmumProfile = slipVariant === "dokter_umum";
   const defaults = {
     showGajiJasa: isDokterUmumProfile,
+    showJasaKjs: true,
     showGajiJaga: isDokterUmumProfile,
     showTunjangan: true,
+    showTunjanganJabaran: true,
+    showTunjanganHariRaya: true,
     showPengurangan: true,
     showBpjsPendapatan: true,
     showBonus: true,
@@ -128,8 +131,15 @@ function resolveDisplayOptions(input, position, slipVariant) {
 
   const overrides = {
     showGajiJasa: parseOptionalBoolean(pickValue(input, ["Tampilkan Gaji Jasa", "showGajiJasa"], "")),
+    showJasaKjs: parseOptionalBoolean(pickValue(input, ["Tampilkan Jasa KJS", "showJasaKjs"], "")),
     showGajiJaga: parseOptionalBoolean(pickValue(input, ["Tampilkan Gaji Jaga", "showGajiJaga"], "")),
     showTunjangan: parseOptionalBoolean(pickValue(input, ["Tampilkan Tunjangan", "showTunjangan"], "")),
+    showTunjanganJabaran: parseOptionalBoolean(
+      pickValue(input, ["Tampilkan Tunjangan Jabaran", "showTunjanganJabaran"], "")
+    ),
+    showTunjanganHariRaya: parseOptionalBoolean(
+      pickValue(input, ["Tampilkan Tunjangan Hari Raya", "showTunjanganHariRaya"], "")
+    ),
     showPengurangan: parseOptionalBoolean(pickValue(input, ["Tampilkan Pemotongan", "showPengurangan"], "")),
     showBpjsPendapatan: parseOptionalBoolean(
       pickValue(input, ["Tampilkan BPJS Pendapatan", "showBpjsPendapatan"], "")
@@ -140,8 +150,13 @@ function resolveDisplayOptions(input, position, slipVariant) {
 
   return {
     showGajiJasa: overrides.showGajiJasa === null ? defaults.showGajiJasa : overrides.showGajiJasa,
+    showJasaKjs: overrides.showJasaKjs === null ? defaults.showJasaKjs : overrides.showJasaKjs,
     showGajiJaga: overrides.showGajiJaga === null ? defaults.showGajiJaga : overrides.showGajiJaga,
     showTunjangan: overrides.showTunjangan === null ? defaults.showTunjangan : overrides.showTunjangan,
+    showTunjanganJabaran:
+      overrides.showTunjanganJabaran === null ? defaults.showTunjanganJabaran : overrides.showTunjanganJabaran,
+    showTunjanganHariRaya:
+      overrides.showTunjanganHariRaya === null ? defaults.showTunjanganHariRaya : overrides.showTunjanganHariRaya,
     showPengurangan: overrides.showPengurangan === null ? defaults.showPengurangan : overrides.showPengurangan,
     showBpjsPendapatan:
       overrides.showBpjsPendapatan === null ? defaults.showBpjsPendapatan : overrides.showBpjsPendapatan,
@@ -181,6 +196,7 @@ function normalizePayload(input) {
   const jasaRadiologi = toNumber(pickValue(input, ["Jasa Pasien Radiologi", "jasaPasienRadiologi"], 0));
   const pphPasal21 = toNumber(pickValue(input, ["PPH Pasal 21", "pphPasal21"], 0));
   const gajiJasaInput = toNumber(pickValue(input, ["gajiJasa", "Gaji Jasa"], 0));
+  const jasaKjs = toNumber(pickValue(input, ["jasaKjs", "Jasa KJS"], 0));
   const gajiJasaComputed =
     jasaPoli + jasaMadco + jasaRawatInap + jasaOperasi + jasaRadiologi > 0
       ? jasaPoli + jasaMadco + jasaRawatInap + jasaOperasi + jasaRadiologi
@@ -197,8 +213,11 @@ function normalizePayload(input) {
     email: pickValue(input, ["email", "Email", "Email Karyawan"], ""),
     gajiPokok: toNumber(pickValue(input, ["gajiPokok", "Gaji Pokok"], 0)),
     gajiJasa: gajiJasaComputed,
+    jasaKjs,
     gajiJaga: toNumber(pickValue(input, ["gajiJaga", "Gaji Jaga"], 0)),
     tunjangan: toNumber(pickValue(input, ["tunjangan", "Tunjangan"], 0)),
+    tunjanganJabaran: toNumber(pickValue(input, ["tunjanganJabaran", "Tunjangan Jabaran"], 0)),
+    tunjanganHariRaya: toNumber(pickValue(input, ["tunjanganHariRaya", "Tunjangan Hari Raya"], 0)),
     bpjsKetenagakerjaanPendapatan: toNumber(
       pickValue(
         input,
@@ -250,8 +269,11 @@ async function createSlipRecord(payload, shouldSendEmail, indexHint = 0) {
   const salary = {
     gajiPokok: normalized.gajiPokok,
     gajiJasa: displayOptions.showGajiJasa ? normalized.gajiJasa : 0,
+    jasaKjs: displayOptions.showJasaKjs ? normalized.jasaKjs : 0,
     gajiJaga: displayOptions.showGajiJaga ? normalized.gajiJaga : 0,
     tunjangan: displayOptions.showTunjangan ? normalized.tunjangan : 0,
+    tunjanganJabaran: displayOptions.showTunjanganJabaran ? normalized.tunjanganJabaran : 0,
+    tunjanganHariRaya: displayOptions.showTunjanganHariRaya ? normalized.tunjanganHariRaya : 0,
     bpjsKetenagakerjaanPendapatan: displayOptions.showBpjsPendapatan
       ? normalized.bpjsKetenagakerjaanPendapatan
       : 0,
@@ -265,8 +287,11 @@ async function createSlipRecord(payload, shouldSendEmail, indexHint = 0) {
   const totalPendapatan =
     salary.gajiPokok +
     salary.gajiJasa +
+    salary.jasaKjs +
     salary.gajiJaga +
     salary.tunjangan +
+    salary.tunjanganJabaran +
+    salary.tunjanganHariRaya +
     salary.bpjsKetenagakerjaanPendapatan +
     salary.bpjsKesehatanPendapatan +
     salary.bonus;
@@ -418,8 +443,11 @@ router.get("/slips/template.xlsx", (req, res) => {
     "Email Karyawan",
     "Gaji Pokok",
     "Gaji Jasa",
+    "Jasa KJS",
     "Gaji Jaga",
     "Tunjangan",
+    "Tunjangan Jabaran",
+    "Tunjangan Hari Raya",
     "BPJS Ketenagakerjaan (Pendapatan)",
     "BPJS Kesehatan (Pendapatan)",
     "Bonus",
@@ -427,8 +455,11 @@ router.get("/slips/template.xlsx", (req, res) => {
     "BPJS Kesehatan (Potongan)",
     "Potongan Lain",
     "Tampilkan Gaji Jasa",
+    "Tampilkan Jasa KJS",
     "Tampilkan Gaji Jaga",
     "Tampilkan Tunjangan",
+    "Tampilkan Tunjangan Jabaran",
+    "Tampilkan Tunjangan Hari Raya",
     "Tampilkan Pemotongan",
     "Tampilkan BPJS Pendapatan",
     "Tampilkan Bonus",
@@ -449,12 +480,17 @@ router.get("/slips/template.xlsx", (req, res) => {
     "Jasa Medis Pasien Madco",
     "Jasa Medis Rawat Inap",
     "Jasa Medis Tindakan Operasi",
+    "Jasa KJS",
     "Tunjangan",
+    "Tunjangan Jabaran",
+    "Tunjangan Hari Raya",
     "Bonus",
     "BPJS Ketenagakerjaan (Pendapatan)",
     "PPH Pasal 21",
     "BPJS Ketenagakerjaan (Potongan)",
     "Tampilkan Tunjangan",
+    "Tampilkan Tunjangan Jabaran",
+    "Tampilkan Tunjangan Hari Raya",
     "Tampilkan Pemotongan",
     "Kirim Email"
   ];
@@ -473,12 +509,17 @@ router.get("/slips/template.xlsx", (req, res) => {
     "Jasa Medis Pasien Madco",
     "Jasa Medis Rawat Inap",
     "Jasa Medis Tindakan Operasi",
+    "Jasa KJS",
     "Tunjangan",
+    "Tunjangan Jabaran",
+    "Tunjangan Hari Raya",
     "Bonus",
     "BPJS Ketenagakerjaan (Pendapatan)",
     "PPH Pasal 21",
     "BPJS Ketenagakerjaan (Potongan)",
     "Tampilkan Tunjangan",
+    "Tampilkan Tunjangan Jabaran",
+    "Tampilkan Tunjangan Hari Raya",
     "Tampilkan Pemotongan",
     "Kirim Email"
   ];
@@ -495,8 +536,11 @@ router.get("/slips/template.xlsx", (req, res) => {
       "Email Karyawan": "dokterumum@email.com",
       "Gaji Pokok": 3500000,
       "Gaji Jasa": 1200000,
+      "Jasa KJS": 0,
       "Gaji Jaga": 450000,
       Tunjangan: 350000,
+      "Tunjangan Jabaran": 150000,
+      "Tunjangan Hari Raya": 0,
       "BPJS Ketenagakerjaan (Pendapatan)": 0,
       "BPJS Kesehatan (Pendapatan)": 0,
       Bonus: 0,
@@ -504,8 +548,11 @@ router.get("/slips/template.xlsx", (req, res) => {
       "BPJS Kesehatan (Potongan)": 0,
       "Potongan Lain": 0,
       "Tampilkan Gaji Jasa": "yes",
+      "Tampilkan Jasa KJS": "no",
       "Tampilkan Gaji Jaga": "yes",
       "Tampilkan Tunjangan": "yes",
+      "Tampilkan Tunjangan Jabaran": "yes",
+      "Tampilkan Tunjangan Hari Raya": "yes",
       "Tampilkan Pemotongan": "yes",
       "Tampilkan BPJS Pendapatan": "yes",
       "Tampilkan Bonus": "yes",
@@ -523,8 +570,11 @@ router.get("/slips/template.xlsx", (req, res) => {
       "Email Karyawan": "dokterspesialis@email.com",
       "Gaji Pokok": 5500000,
       "Gaji Jasa": 2200000,
+      "Jasa KJS": 0,
       "Gaji Jaga": 0,
       Tunjangan: 500000,
+      "Tunjangan Jabaran": 250000,
+      "Tunjangan Hari Raya": 0,
       "BPJS Ketenagakerjaan (Pendapatan)": 0,
       "BPJS Kesehatan (Pendapatan)": 0,
       Bonus: 0,
@@ -532,8 +582,11 @@ router.get("/slips/template.xlsx", (req, res) => {
       "BPJS Kesehatan (Potongan)": 0,
       "Potongan Lain": 0,
       "Tampilkan Gaji Jasa": "yes",
+      "Tampilkan Jasa KJS": "no",
       "Tampilkan Gaji Jaga": "no",
       "Tampilkan Tunjangan": "yes",
+      "Tampilkan Tunjangan Jabaran": "yes",
+      "Tampilkan Tunjangan Hari Raya": "yes",
       "Tampilkan Pemotongan": "yes",
       "Tampilkan BPJS Pendapatan": "yes",
       "Tampilkan Bonus": "yes",
@@ -551,8 +604,11 @@ router.get("/slips/template.xlsx", (req, res) => {
       "Email Karyawan": "karyawan@email.com",
       "Gaji Pokok": 2800000,
       "Gaji Jasa": 0,
+      "Jasa KJS": 0,
       "Gaji Jaga": 0,
       Tunjangan: 250000,
+      "Tunjangan Jabaran": 0,
+      "Tunjangan Hari Raya": 0,
       "BPJS Ketenagakerjaan (Pendapatan)": 0,
       "BPJS Kesehatan (Pendapatan)": 0,
       Bonus: 0,
@@ -560,8 +616,11 @@ router.get("/slips/template.xlsx", (req, res) => {
       "BPJS Kesehatan (Potongan)": 0,
       "Potongan Lain": 0,
       "Tampilkan Gaji Jasa": "no",
+      "Tampilkan Jasa KJS": "no",
       "Tampilkan Gaji Jaga": "no",
       "Tampilkan Tunjangan": "yes",
+      "Tampilkan Tunjangan Jabaran": "no",
+      "Tampilkan Tunjangan Hari Raya": "no",
       "Tampilkan Pemotongan": "yes",
       "Tampilkan BPJS Pendapatan": "yes",
       "Tampilkan Bonus": "yes",
@@ -587,12 +646,17 @@ router.get("/slips/template.xlsx", (req, res) => {
       "Jasa Medis Pasien Madco": 288000,
       "Jasa Medis Rawat Inap": 0,
       "Jasa Medis Tindakan Operasi": 0,
+      "Jasa KJS": 0,
       Tunjangan: 500000,
+      "Tunjangan Jabaran": 200000,
+      "Tunjangan Hari Raya": 0,
       Bonus: 0,
       "BPJS Ketenagakerjaan (Pendapatan)": 0,
       "PPH Pasal 21": 0,
       "BPJS Ketenagakerjaan (Potongan)": 0,
       "Tampilkan Tunjangan": "yes",
+      "Tampilkan Tunjangan Jabaran": "yes",
+      "Tampilkan Tunjangan Hari Raya": "yes",
       "Tampilkan Pemotongan": "yes",
       "Kirim Email": "yes"
     }
@@ -613,12 +677,17 @@ router.get("/slips/template.xlsx", (req, res) => {
       "Jasa Medis Pasien Madco": 220000,
       "Jasa Medis Rawat Inap": 0,
       "Jasa Medis Tindakan Operasi": 0,
+      "Jasa KJS": 0,
       Tunjangan: 300000,
+      "Tunjangan Jabaran": 100000,
+      "Tunjangan Hari Raya": 0,
       Bonus: 0,
       "BPJS Ketenagakerjaan (Pendapatan)": 0,
       "PPH Pasal 21": 0,
       "BPJS Ketenagakerjaan (Potongan)": 0,
       "Tampilkan Tunjangan": "yes",
+      "Tampilkan Tunjangan Jabaran": "yes",
+      "Tampilkan Tunjangan Hari Raya": "yes",
       "Tampilkan Pemotongan": "yes",
       "Kirim Email": "yes"
     }
@@ -682,7 +751,8 @@ router.get("/slips/template.xlsx", (req, res) => {
         "Isi salah satu sheet template sesuai kebutuhan. Posisi bebas diisi apa saja, sistem akan menampilkan sesuai input.",
       nilai_boolean: "Gunakan yes/no untuk kolom Kirim Email atau Tampilkan ...",
       tipe_slip: "Tipe Slip wajib salah satu: Dokter Umum, Dokter Spesialis, atau Karyawan",
-      kolom_baru: "Gunakan kolom Tunjangan dan Tampilkan Pemotongan untuk komponen/toggle tambahan"
+      kolom_baru:
+        "Gunakan kolom Tunjangan, Tunjangan Jabaran, Tunjangan Hari Raya, dan Tampilkan Pemotongan untuk komponen/toggle tambahan"
     }
   ]);
   XLSX.utils.book_append_sheet(workbook, panduanSheet, "panduan");
