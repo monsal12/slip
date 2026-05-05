@@ -232,12 +232,26 @@ function normalizePayload(input) {
     bpjsKetenagakerjaanPotongan: toNumber(
       pickValue(
         input,
-        ["bpjsKetenagakerjaanPotongan", "BPJS Ketenagakerjaan Potongan", "BPJS Ketenagakerjaan (Potongan)"],
+        [
+          "bpjsKetenagakerjaanPotongan",
+          "BPJS Ketenagakerjaan Potongan",
+          "BPJS Ketenagakerjaan (Potongan)",
+          "BPJS Ketenagakerjaan (Potongan Ditanggung Rumah Sakit)"
+        ],
         0
       )
     ),
     bpjsKesehatanPotongan: toNumber(
-      pickValue(input, ["bpjsKesehatanPotongan", "BPJS Kesehatan Potongan", "BPJS Kesehatan (Potongan)"], 0)
+      pickValue(
+        input,
+        [
+          "bpjsKesehatanPotongan",
+          "BPJS Kesehatan Potongan",
+          "BPJS Kesehatan (Potongan)",
+          "BPJS Kesehatan (Potongan Ditanggung Rumah Sakit)"
+        ],
+        0
+      )
     ),
     potonganLain: toNumber(pickValue(input, ["potonganLain", "Potongan Lain"], 0)) + pphPasal21,
     jasaMedisPasienPoli: jasaPoli,
@@ -451,8 +465,8 @@ router.get("/slips/template.xlsx", (req, res) => {
     "BPJS Ketenagakerjaan (Pendapatan)",
     "BPJS Kesehatan (Pendapatan)",
     "Bonus",
-    "BPJS Ketenagakerjaan (Potongan)",
-    "BPJS Kesehatan (Potongan)",
+    "BPJS Ketenagakerjaan (Potongan Ditanggung Rumah Sakit)",
+    "BPJS Kesehatan (Potongan Ditanggung Rumah Sakit)",
     "Potongan Lain",
     "Tampilkan Gaji Jasa",
     "Tampilkan Jasa KJS",
@@ -487,7 +501,7 @@ router.get("/slips/template.xlsx", (req, res) => {
     "Bonus",
     "BPJS Ketenagakerjaan (Pendapatan)",
     "PPH Pasal 21",
-    "BPJS Ketenagakerjaan (Potongan)",
+    "BPJS Ketenagakerjaan (Potongan Ditanggung Rumah Sakit)",
     "Tampilkan Tunjangan",
     "Tampilkan Tunjangan Jabaran",
     "Tampilkan Tunjangan Hari Raya",
@@ -516,7 +530,7 @@ router.get("/slips/template.xlsx", (req, res) => {
     "Bonus",
     "BPJS Ketenagakerjaan (Pendapatan)",
     "PPH Pasal 21",
-    "BPJS Ketenagakerjaan (Potongan)",
+    "BPJS Ketenagakerjaan (Potongan Ditanggung Rumah Sakit)",
     "Tampilkan Tunjangan",
     "Tampilkan Tunjangan Jabaran",
     "Tampilkan Tunjangan Hari Raya",
@@ -544,8 +558,8 @@ router.get("/slips/template.xlsx", (req, res) => {
       "BPJS Ketenagakerjaan (Pendapatan)": 0,
       "BPJS Kesehatan (Pendapatan)": 0,
       Bonus: 0,
-      "BPJS Ketenagakerjaan (Potongan)": 19904,
-      "BPJS Kesehatan (Potongan)": 0,
+      "BPJS Ketenagakerjaan (Potongan Ditanggung Rumah Sakit)": 19904,
+      "BPJS Kesehatan (Potongan Ditanggung Rumah Sakit)": 0,
       "Potongan Lain": 0,
       "Tampilkan Gaji Jasa": "yes",
       "Tampilkan Jasa KJS": "no",
@@ -578,8 +592,8 @@ router.get("/slips/template.xlsx", (req, res) => {
       "BPJS Ketenagakerjaan (Pendapatan)": 0,
       "BPJS Kesehatan (Pendapatan)": 0,
       Bonus: 0,
-      "BPJS Ketenagakerjaan (Potongan)": 19904,
-      "BPJS Kesehatan (Potongan)": 0,
+      "BPJS Ketenagakerjaan (Potongan Ditanggung Rumah Sakit)": 19904,
+      "BPJS Kesehatan (Potongan Ditanggung Rumah Sakit)": 0,
       "Potongan Lain": 0,
       "Tampilkan Gaji Jasa": "yes",
       "Tampilkan Jasa KJS": "no",
@@ -612,8 +626,8 @@ router.get("/slips/template.xlsx", (req, res) => {
       "BPJS Ketenagakerjaan (Pendapatan)": 0,
       "BPJS Kesehatan (Pendapatan)": 0,
       Bonus: 0,
-      "BPJS Ketenagakerjaan (Potongan)": 19904,
-      "BPJS Kesehatan (Potongan)": 0,
+      "BPJS Ketenagakerjaan (Potongan Ditanggung Rumah Sakit)": 19904,
+      "BPJS Kesehatan (Potongan Ditanggung Rumah Sakit)": 0,
       "Potongan Lain": 0,
       "Tampilkan Gaji Jasa": "no",
       "Tampilkan Jasa KJS": "no",
@@ -653,7 +667,7 @@ router.get("/slips/template.xlsx", (req, res) => {
       Bonus: 0,
       "BPJS Ketenagakerjaan (Pendapatan)": 0,
       "PPH Pasal 21": 0,
-      "BPJS Ketenagakerjaan (Potongan)": 0,
+      "BPJS Ketenagakerjaan (Potongan Ditanggung Rumah Sakit)": 0,
       "Tampilkan Tunjangan": "yes",
       "Tampilkan Tunjangan Jabaran": "yes",
       "Tampilkan Tunjangan Hari Raya": "yes",
@@ -684,7 +698,7 @@ router.get("/slips/template.xlsx", (req, res) => {
       Bonus: 0,
       "BPJS Ketenagakerjaan (Pendapatan)": 0,
       "PPH Pasal 21": 0,
-      "BPJS Ketenagakerjaan (Potongan)": 0,
+      "BPJS Ketenagakerjaan (Potongan Ditanggung Rumah Sakit)": 0,
       "Tampilkan Tunjangan": "yes",
       "Tampilkan Tunjangan Jabaran": "yes",
       "Tampilkan Tunjangan Hari Raya": "yes",

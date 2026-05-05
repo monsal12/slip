@@ -111,8 +111,8 @@ Kolom template:
 - `BPJS Ketenagakerjaan (Pendapatan)`
 - `BPJS Kesehatan (Pendapatan)`
 - `Bonus`
-- `BPJS Ketenagakerjaan (Potongan)`
-- `BPJS Kesehatan (Potongan)`
+- `BPJS Ketenagakerjaan (Potongan Ditanggung Rumah Sakit)`
+- `BPJS Kesehatan (Potongan Ditanggung Rumah Sakit)`
 - `Potongan Lain`
 - `Tampilkan Gaji Jasa` (`yes/no`)
 - `Tampilkan Jasa KJS` (`yes/no`)
