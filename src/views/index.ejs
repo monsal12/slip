@@ -197,8 +197,12 @@
 
     <section class="card history-card">
       <div class="card-head">
-        <h2>Riwayat Slip Terakhir</h2>
-        <p>Daftar 20 slip terbaru beserta status pengiriman email dan detail error.</p>
+        <h2>Riwayat Slip</h2>
+        <div class="tabs">
+          <a href="/" class="tab <%= currentTab !== 'gagal' ? 'active' : '' %>">Terbaru (20)</a>
+          <a href="/?tab=gagal" class="tab <%= currentTab === 'gagal' ? 'active' : '' %>">Gagal</a>
+        </div>
+        <p><%= currentTab === 'gagal' ? 'Daftar semua slip yang gagal dikirim email.' : 'Daftar 20 slip terbaru beserta status pengiriman email dan detail error.' %></p>
       </div>
 
       <div class="table-wrap">

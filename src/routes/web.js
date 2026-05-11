@@ -416,10 +416,25 @@ router.use(requireAuth);
 
 router.get("/", async (req, res, next) => {
   try {
-    const slips = await Slip.find().populate("employee").sort({ createdAt: -1 }).limit(20).lean();
+    const tab = String(req.query.tab || "").trim().toLowerCase();
+
+    // If user requests the 'gagal' tab, show all slips with emailStatus 'failed' (no limit).
+    // Otherwise show the latest 20 slips (default behaviour).
+    const baseQuery = {};
+    if (tab === "gagal") {
+      baseQuery.emailStatus = "failed";
+    }
+
+    let slipsQuery = Slip.find(baseQuery).populate("employee").sort({ createdAt: -1 });
+    if (tab !== "gagal") {
+      slipsQuery = slipsQuery.limit(20);
+    }
+
+    const slips = await slipsQuery.lean();
 
     res.render("index", {
       slips,
+      currentTab: tab || "recent",
       success: req.query.success || "",
       error: req.query.error || "",
       smtpSuccess: req.query.smtpSuccess || "",

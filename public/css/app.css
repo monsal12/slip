@@ -125,6 +125,41 @@ body {
   margin-bottom: 12px;
 }
 
+.tabs {
+  display: inline-flex;
+  gap: 8px;
+  padding: 6px;
+  border-radius: 999px;
+  background: #f1faf6;
+  border: 1px solid #cfe3d8;
+  margin: 6px 0 6px;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #2a5a44;
+  text-decoration: none;
+  background: transparent;
+  border: 1px solid transparent;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+
+.tab:hover {
+  background: #e6f5ed;
+}
+
+.tab.active {
+  background: #13583d;
+  color: #ffffff;
+  border-color: #0f5b3e;
+}
+
 .card-head h2 {
   margin: 2px 0 6px;
   letter-spacing: -0.02em;
