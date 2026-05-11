@@ -416,7 +416,7 @@ router.use(requireAuth);
 
 router.get("/", async (req, res, next) => {
   try {
-    const tab = String(req.query.tab || "").trim().toLowerCase();
+    const tab = String(req.query.tab || "gagal").trim().toLowerCase();
 
     // If user requests the 'gagal' tab, show all slips with emailStatus 'failed' (no limit).
     // Otherwise show the latest 20 slips (default behaviour).
@@ -434,7 +434,7 @@ router.get("/", async (req, res, next) => {
 
     res.render("index", {
       slips,
-      currentTab: tab || "recent",
+      currentTab: tab,
       success: req.query.success || "",
       error: req.query.error || "",
       smtpSuccess: req.query.smtpSuccess || "",
