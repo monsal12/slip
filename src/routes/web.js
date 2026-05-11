@@ -39,6 +39,33 @@ const TEMPLATE_SHEETS = {
   RADIOLOGI: "template_spesialis_radiologi"
 };
 
+const EMAIL_RETRY_LIMIT = Math.max(0, Number(process.env.EMAIL_RETRY_LIMIT || 3));
+const EMAIL_RETRY_BASE_MS = Math.max(0, Number(process.env.EMAIL_RETRY_BASE_MS || 5000));
+const BATCH_EMAIL_DELAY_MS = Math.max(0, Number(process.env.BATCH_EMAIL_DELAY_MS || 2000));
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function sendEmailWithRetry(payload, maxRetries) {
+  let lastError = null;
+
+  for (let attempt = 0; attempt <= maxRetries; attempt += 1) {
+    try {
+      await sendSlipEmail(payload);
+      return { ok: true };
+    } catch (error) {
+      lastError = error;
+      if (attempt < maxRetries) {
+        const backoff = EMAIL_RETRY_BASE_MS * Math.pow(2, attempt);
+        await sleep(backoff);
+      }
+    }
+  }
+
+  return { ok: false, error: lastError };
+}
+
 function requireAuth(req, res, next) {
   if (req.session && req.session.isAuthenticated) {
     return next();
@@ -361,20 +388,23 @@ async function createSlipRecord(payload, shouldSendEmail, indexHint = 0) {
   });
 
   if (shouldSendEmail) {
-    try {
-      await sendSlipEmail({
+    const result = await sendEmailWithRetry(
+      {
         to: employee.email,
         employeeName: employee.name,
         periodLabel,
         pdfPath
-      });
+      },
+      EMAIL_RETRY_LIMIT
+    );
 
+    if (result.ok) {
       slip.emailStatus = "sent";
       slip.emailSentAt = new Date();
       slip.emailError = "";
-    } catch (error) {
+    } else {
       slip.emailStatus = "failed";
-      slip.emailError = error.message;
+      slip.emailError = result.error ? result.error.message : "Email gagal dikirim";
     }
 
     await slip.save();
@@ -838,6 +868,10 @@ router.post("/slips/batch-upload", upload.single("batchFile"), async (req, res) 
         }
         if (slip.emailStatus === "failed") {
           failed += 1;
+        }
+
+        if (sendFlag && BATCH_EMAIL_DELAY_MS > 0 && index < rowsWithSheet.length - 1) {
+          await sleep(BATCH_EMAIL_DELAY_MS);
         }
       } catch (error) {
         errors.push(`Baris ${index + 2}: ${error.message}`);
